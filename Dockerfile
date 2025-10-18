@@ -1,32 +1,38 @@
-# Stage 1: Build
+# Stage 1: Build with Maven
 FROM maven:3.9-eclipse-temurin-17 AS build
 
-WORKDIR /app
+WORKDIR /build
 
-# Copy pom.xml and download dependencies
+# Copy project files
 COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copy source code and build
 COPY src ./src
+
+# Build the application
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run
+# Stage 2: Runtime
 FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
-# Copy the jar from build stage
-COPY --from=build /app/target/Img-Url-con.jar app.jar
+# Copy the JAR file
+COPY --from=build /build/target/*.jar app.jar
 
-# Copy webapp files
-COPY --from=build /app/src/main/webapp ./src/main/webapp
+# Copy webapp directory (JSP files)
+COPY --from=build /build/src/main/webapp ./src/main/webapp
+
+# Create necessary directories
+RUN mkdir -p /app/target/classes
 
 # Expose port
 EXPOSE 10000
 
-# Set environment variable for port
+# Environment variable
 ENV PORT=10000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+  CMD curl -f http://localhost:10000/ || exit 1
+
 # Run the application
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
