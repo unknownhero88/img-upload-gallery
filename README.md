@@ -2,6 +2,10 @@
 
 A simple **Java Servlet + JSP web application** that lets users **upload images**, store them on **ImgBB (via API)**, and display them in a **gallery view**.  
 The app uses **MySQL** to store image metadata like name, URL, and upload timestamp.
+---
+
+🌐 **Live Demo:** [https://img-upload-gallery.onrender.com](https://img-upload-gallery.onrender.com)
+
 
 ---
 
