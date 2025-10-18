@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: img-upload-gallery
+    env: java
+    buildCommand: mvn clean package
+    startCommand: java -jar target/Img-Url-con.jar
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DB_URL
+        value: jdbc:mysql://your-mysql-host:3306/javabase
+      - key: DB_USER
+        value: root
+      - key: DB_PASSWORD
+        value: your_password
+      - key: IMGBB_API_KEY
+        value: 34d8f020849d0373dd10544fb315c979
+    
+# Optional: MySQL Database on Render
+# databases:
+#   - name: img-gallery-db
+#     databaseName: javabase
+#     user: dbuser
